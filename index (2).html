@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Морозивна погода — Фора</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍦</text></svg>">
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;500;600;700;800;900&family=Nunito+Sans:ital,opsz,wght@0,6..12,400;0,6..12,600;0,6..12,700;0,6..12,800&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{overflow-x:hidden;-webkit-font-smoothing:antialiased;font-family:'Nunito Sans',sans-serif;background:#fffdf5}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes popIn{from{opacity:0;transform:translateY(40px) scale(.92)}to{opacity:1;transform:none}}
+@keyframes floatY{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+@keyframes pulseSoft{0%,100%{transform:scale(1)}50%{transform:scale(1.04)}}
+@keyframes slideL{from{opacity:0;transform:translateX(-30px)}to{opacity:1;transform:none}}
+@keyframes slideR{from{opacity:0;transform:translateX(30px)}to{opacity:1;transform:none}}
+
+.page{min-height:100vh;display:flex;position:relative;overflow:hidden;transition:background 1s ease}
+.plashka{position:absolute;z-index:0}
+.floater{position:absolute;opacity:.08;pointer-events:none;animation:floatY 5s ease-in-out infinite}
+
+.left{flex:0 0 50%;max-width:50%;display:flex;flex-direction:column;justify-content:center;padding:48px 56px;position:relative;z-index:2;animation:slideL .6s ease-out}
+.right{flex:0 0 50%;max-width:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;z-index:2;padding:48px 40px;animation:slideR .6s ease-out}
+
+.logo-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:36px}
+.stk{display:inline-flex;align-items:center;gap:6px;font-family:'Unbounded',sans-serif;font-weight:700;padding:7px 16px;border-radius:10px;font-size:12px}
+h1{font-family:'Unbounded',sans-serif;font-weight:900;font-size:clamp(32px,3.2vw,48px);color:#1D3A2C;line-height:1.08;margin-bottom:12px}
+.sub{font-size:clamp(14px,1.2vw,17px);color:#7A8A7E;font-weight:600;line-height:1.55;max-width:400px;margin-bottom:32px}
+.slider-section{margin-bottom:28px}
+.slider-label{font-family:'Unbounded',sans-serif;font-weight:700;font-size:12px;color:#7A8A7E;margin-bottom:12px;text-transform:uppercase;letter-spacing:1px}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:10px;border-radius:5px;outline:none;cursor:pointer;background:linear-gradient(90deg,#00B15E 0%,#FFC42E 45%,#E5412E 100%)}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:36px;height:36px;border-radius:50%;background:white;box-shadow:0 3px 14px rgba(0,0,0,0.18);cursor:grab;border:3px solid #00B15E;margin-top:-13px}
+input[type=range]::-moz-range-thumb{width:36px;height:36px;border-radius:50%;background:white;box-shadow:0 3px 14px rgba(0,0,0,0.18);cursor:grab;border:3px solid #00B15E}
+.slider-labels{display:flex;justify-content:space-between;margin-top:6px;font-size:11px;color:#7A8A7E;font-weight:600}
+.tier-bar{display:flex;gap:4px;width:100%;margin-bottom:24px}
+.tier-bar div{flex:1;height:6px;border-radius:3px;transition:background .4s}
+.tier-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;width:100%;margin-bottom:28px}
+.tier-cell{border-radius:14px;padding:10px 4px;text-align:center;border:2px solid transparent;transition:all .3s;backdrop-filter:blur(8px)}
+.tier-cell .emoji{font-size:18px;margin-bottom:1px}
+.tier-cell .pct{font-family:'Unbounded',sans-serif;font-weight:800;font-size:14px;color:#1D3A2C}
+.tier-cell .range{font-size:9px;color:#7A8A7E;font-weight:600;margin-top:1px}
+.cta{background:#E5412E;color:white;border:none;border-radius:16px;padding:16px 32px;font-family:'Unbounded',sans-serif;font-weight:800;font-size:15px;cursor:pointer;box-shadow:0 8px 32px rgba(229,65,46,0.25);transition:all .25s cubic-bezier(.34,1.56,.64,1);width:100%;max-width:420px}
+.cta:hover{transform:scale(1.03);box-shadow:0 12px 40px rgba(229,65,46,0.35)}
+.info{font-size:11px;color:#7A8A7E;line-height:1.7;max-width:380px;margin-top:16px}
+
+.visual-card{background:rgba(255,255,255,0.65);backdrop-filter:blur(24px);border-radius:36px;padding:48px 40px;text-align:center;border:1px solid rgba(255,255,255,0.8);box-shadow:0 12px 60px rgba(0,0,0,0.06);width:100%;max-width:420px}
+.thermo-row{display:flex;align-items:center;justify-content:center;gap:24px;margin-bottom:20px}
+.temp-num{font-family:'Unbounded',sans-serif;font-weight:900;font-size:clamp(72px,8vw,110px);color:#1D3A2C;line-height:1}
+.temp-num span{font-size:clamp(32px,3vw,48px)}
+.status-badge{display:inline-flex;align-items:center;gap:8px;border-radius:14px;padding:8px 20px;transition:background .4s;margin-bottom:24px}
+.status-label{font-family:'Unbounded',sans-serif;font-weight:700;font-size:15px;transition:color .4s}
+.discount-box{border-radius:24px;padding:28px;transition:all .5s;border:2px solid transparent}
+.discount-label{font-size:14px;color:#7A8A7E;font-weight:600;margin-bottom:4px}
+.discount-num{font-family:'Unbounded',sans-serif;font-weight:900;font-size:clamp(56px,6vw,84px);color:#1D3A2C;line-height:1;animation:pulseSoft 2.5s ease-in-out infinite}
+.discount-sub{font-size:14px;color:#7A8A7E;margin-top:8px}
+
+footer{position:absolute;bottom:0;width:100%;padding:14px 24px;text-align:center;z-index:2}
+footer p{font-size:11px;color:rgba(29,58,44,0.2)}
+
+.overlay{position:fixed;inset:0;z-index:999;display:flex;align-items:center;justify-content:center;background:rgba(29,58,44,0.6);backdrop-filter:blur(16px);padding:20px;animation:fadeIn .3s}
+.coupon{background:white;border-radius:28px;max-width:440px;width:100%;overflow:hidden;box-shadow:0 40px 100px rgba(0,0,0,0.3);animation:popIn .45s cubic-bezier(.34,1.56,.64,1)}
+.coupon-head{background:#00B15E;padding:28px 28px 22px;position:relative}
+.coupon-head-row{display:flex;justify-content:space-between;align-items:flex-start}
+.coupon-pct{font-family:'Unbounded',sans-serif;font-weight:900;font-size:56px;color:white;margin-top:18px;line-height:1}
+.coupon-desc{font-size:16px;color:rgba(255,255,255,0.85);margin-top:8px;font-weight:600}
+.perf{position:absolute;bottom:0;left:20px;right:20px;border-bottom:2px dashed rgba(255,255,255,0.3)}
+.cutout{position:absolute;bottom:-13px;width:26px;height:26px;border-radius:50%;background:white}
+.cutout-l{left:-13px}.cutout-r{right:-13px}
+.coupon-body{padding:26px 28px 30px;text-align:center}
+.coupon-body .hint{font-size:14px;color:#7A8A7E;margin:0 0 18px}
+.qr-wrap{display:flex;justify-content:center;margin-bottom:18px}
+.code-box{font-family:'Unbounded',sans-serif;font-size:13px;font-weight:700;color:#1D3A2C;background:#F0EFEB;padding:12px 20px;border-radius:12px;letter-spacing:2.5px}
+.coupon-body .fine{font-size:11px;color:#bbb;margin:14px 0 0}
+.coupon-btn{margin-top:22px;background:#00B15E;color:white;border:none;border-radius:16px;padding:15px 0;width:100%;font-family:'Unbounded',sans-serif;font-weight:700;font-size:15px;cursor:pointer;box-shadow:0 6px 24px rgba(0,177,94,0.33);transition:transform .2s}
+.coupon-btn:hover{transform:scale(1.02)}
+.hidden{display:none}
+
+@media(max-width:900px){
+  .page{flex-direction:column}
+  .left,.right{flex:none;max-width:100%;padding:32px 24px}
+  .left{padding-bottom:16px}
+  .right{padding-top:0}
+  .tier-grid{grid-template-columns:repeat(3,1fr)}
+  .temp-num{font-size:72px!important}
+  footer{position:relative}
+}
+</style>
+</head>
+<body>
+<div class="page" id="page">
+  <div class="plashka" style="width:200px;height:200px;background:rgba(0,177,94,0.05);border-radius:36px;transform:rotate(15deg);top:-60px;right:20%"></div>
+  <div class="plashka" style="width:140px;height:140px;background:rgba(255,196,46,0.06);border-radius:28px;transform:rotate(-20deg);top:60%;left:-40px"></div>
+  <div class="plashka" style="width:120px;height:120px;background:rgba(229,65,46,0.04);border-radius:24px;transform:rotate(25deg);bottom:5%;right:8%"></div>
+  <div class="plashka" style="width:80px;height:80px;background:rgba(123,97,255,0.04);border-radius:18px;transform:rotate(-12deg);top:20%;left:45%"></div>
+  <div class="plashka" style="width:100px;height:100px;background:rgba(0,174,239,0.05);border-radius:20px;transform:rotate(8deg);bottom:30%;left:20%"></div>
+  <div class="floater" style="font-size:48px;top:6%;left:48%;animation-duration:5.5s">🍦</div>
+  <div class="floater" style="font-size:36px;top:70%;left:92%;animation-duration:6.2s;animation-delay:.8s">🍧</div>
+  <div class="floater" style="font-size:42px;bottom:8%;left:5%;animation-duration:7s;animation-delay:1.5s">🍨</div>
+  <div class="floater" style="font-size:30px;top:15%;right:5%;animation-duration:5.8s;animation-delay:2.2s">🧊</div>
+
+  <div class="left">
+    <div class="logo-row">
+      <svg width="130" height="43" viewBox="0 0 150 50" fill="none"><path d="M9.654 46.974H94.031c4.77 0 8.654-3.884 8.654-8.654V11.68C102.685 6.91 98.801 3.026 94.031 3.026H9.654C4.884 3.026 1 6.91 1 11.68v26.64c-.026 4.77 3.858 8.654 8.654 8.654Z" fill="#00B15E"/><path d="M48.467 16.659h-.104c-2.06 0-3.832.677-5.292 2.007-1.46 1.329-2.19 2.972-2.19 4.848v2.868c0 1.876.73 3.519 2.19 4.848 1.46 1.33 3.233 2.007 5.292 2.007h.104c2.06 0 3.832-.677 5.292-2.007 1.46-1.329 2.19-2.972 2.19-4.848v-2.868c0-1.876-.73-3.519-2.19-4.848-1.434-1.356-3.232-2.007-5.292-2.007Zm0 12.512h-.104c-.86 0-1.564-.261-2.163-.808-.6-.548-.887-1.199-.887-1.981v-2.868c0-.782.287-1.434.887-1.981.6-.548 1.303-.808 2.163-.808h.104c.835 0 1.538.26 2.138.808.6.548.913 1.199.913 1.981v2.868c0 .782-.287 1.434-.913 1.981-.6.548-1.277.808-2.138.808Z" fill="#fff"/><path d="M37.337 18.666c-1.408-1.329-3.128-2.007-5.11-2.007h-.103c-1.121 0-2.19.235-3.18.704-.365-.652-1.069-1.121-1.877-1.121-.808 0-1.512.443-1.877 1.12a8.173 8.173 0 0 0-3.18-.703h-.13c-1.982 0-3.676.677-5.084 2.007-1.407 1.33-2.111 2.972-2.111 4.848v2.868c0 1.877.704 3.519 2.111 4.849 1.408 1.329 3.128 2.007 5.084 2.007h.104c1.043 0 2.007-.209 2.945-.6v2.66c0 .547.209 1.042.626 1.46.417.39.938.599 1.512.599.521 0 .99-.156 1.408-.495.39-.313.625-.73.703-1.2V32.665a8.06 8.06 0 0 0 2.945.6h.104c1.982 0 3.702-.679 5.11-2.008 1.407-1.33 2.111-2.972 2.111-4.849v-2.867c.026-1.903-.704-3.545-2.111-4.874Zm-12.382 7.716c0 .782-.287 1.434-.886 1.981-.574.548-1.251.808-2.06.808h-.13c-.808 0-1.486-.26-2.085-.808-.574-.547-.86-1.2-.86-1.981v-2.868c0-.782.286-1.434.86-1.981.573-.548 1.251-.808 2.086-.808h.104c.808 0 1.486.26 2.06.834.573.548.86 1.2.86 1.981v2.842h.052Zm10.244 0c0 .782-.287 1.434-.86 1.981-.574.548-1.252.808-2.086.808h-.104c-.808 0-1.486-.26-2.06-.808-.573-.547-.86-1.2-.86-1.981v-2.868c0-.782.287-1.434.86-1.981.574-.548 1.252-.808 2.06-.808h.104c.808 0 1.512.26 2.086.808.573.548.86 1.2.86 1.981v2.868Z" fill="#fff"/><path d="M70.233 18.666c-1.46-1.329-3.258-2.007-5.318-2.007h-.104c-1.226 0-2.398.261-3.467.756-.365-.704-1.069-1.173-1.903-1.173-1.173 0-2.138.964-2.138 2.137v.287 1.355 15.301c0 .548.209 1.043.652 1.46.417.365.964.574 1.564.574.6 0 1.121-.209 1.59-.6.417-.391.626-.886.626-1.434V32.638a8.172 8.172 0 0 0 2.945.6h.104c2.06 0 3.858-.678 5.318-2.008 1.46-1.329 2.19-2.971 2.19-4.848v-2.868c.052-1.876-.704-3.518-2.06-4.848Zm-2.241 7.69c0 .782-.287 1.434-.913 1.981-.6.548-1.303.808-2.138.808h-.104c-.86 0-1.564-.26-2.163-.808-.6-.548-.887-1.2-.887-1.981v-2.868c0-.782.287-1.433.887-1.98.6-.548 1.303-.809 2.163-.809h.104c.835 0 1.538.261 2.164.835.6.547.913 1.199.913 1.98v2.843h-.026Z" fill="#fff"/><path d="M127.5 47c12.15 0 22-9.85 22-22s-9.85-22-22-22-22 9.85-22 22 9.85 22 22 22Z" fill="#E5412E"/><path d="M137.978 20.178a2.208 2.208 0 0 0-1.564-.756h-1.668l-4.144-4.9a1.107 1.107 0 0 0-1.669-.131c-.234.209-.391.496-.417.808a1.1 1.1 0 0 0 .287.86l2.867 3.39h-8.367l2.867-3.39c.209-.234.313-.547.287-.86a1.126 1.126 0 0 0-.417-.808 1.126 1.126 0 0 0-.86-.287 1.126 1.126 0 0 0-.808.417l-4.145 4.901h-1.668c-.6 0-1.173.287-1.564.756-.391.47-.521 1.095-.365 1.694l2.32 9.827c.208.913 1.016 1.538 1.929 1.538h13.215c.913 0 1.721-.625 1.929-1.538l2.32-9.827c.157-.6.026-1.225-.365-1.694Zm-13.372 9.201c0 .496-.391.887-.886.887h-.156c-.496 0-.887-.391-.887-.887V23.28c0-.495.391-.886.887-.886h.156c.495 0 .886.391.886.886v6.1Zm3.832 0c0 .496-.391.887-.886.887h-.157c-.495 0-.886-.391-.886-.887V23.28c0-.495.391-.886.886-.886h.157c.495 0 .886.391.886.886v6.1Zm3.858 0c0 .496-.391.887-.886.887h-.157c-.495 0-.886-.391-.886-.887V23.28c0-.495.391-.886.886-.886h.157c.495 0 .886.391.886.886v6.1Z" fill="#fff"/><path d="M86.785 16.398c-.782 0-1.46.417-1.825 1.017v.026a8.26 8.26 0 0 0-3.493-.782h-.104c-2.06 0-3.832.677-5.292 2.007-1.46 1.33-2.19 2.972-2.19 4.848v2.868c0 1.877.73 3.519 2.19 4.849 1.46 1.329 3.233 2.007 5.292 2.007h.104c1.252 0 2.424-.261 3.493-.782.391.626 1.069 1.043 1.851 1.043 1.2 0 2.164-.965 2.164-2.164V19.135v-.47-.104c0-1.199-.964-2.163-2.164-2.163h-.026Zm-2.268 9.983c0 .782-.286 1.434-.912 1.981-.6.548-1.304.808-2.138.808h-.104c-.86 0-1.564-.26-2.164-.808-.6-.548-.886-1.2-.886-1.981v-2.868c0-.782.286-1.434.886-1.981.6-.548 1.304-.808 2.164-.808h.104c.834 0 1.538.26 2.164.808.6.548.912 1.2.912 1.981v2.868h-.026Z" fill="#fff"/></svg>
+      <div class="stk" style="background:rgba(29,58,44,0.06);color:#1D3A2C;backdrop-filter:blur(8px)">Літо 2026</div>
+    </div>
+    <h1>Морозивна<br>погода</h1>
+    <p class="sub">Що гарячіше надворі — то більша знижка на морозиво у Форі</p>
+    <div class="slider-section">
+      <div class="slider-label">Температура на вулиці</div>
+      <input type="range" id="slider" min="20" max="42" value="28">
+      <div class="slider-labels"><span>+20°C</span><span>+42°C</span></div>
+    </div>
+    <div class="tier-bar" id="tier-bar"><div></div><div></div><div></div><div></div><div></div><div></div></div>
+    <div class="tier-grid" id="tier-grid"></div>
+    <button class="cta" id="cta-btn">Отримати морозивну знижку 🎫</button>
+    <p class="info">Скануй купон на касі будь-якого з 340+ магазинів Фора. Знижка діє на все морозиво.</p>
+  </div>
+
+  <div class="right">
+    <div class="visual-card">
+      <div class="thermo-row">
+        <svg id="thermo" width="38" height="200" viewBox="0 0 38 200" style="flex-shrink:0">
+          <rect x="11" y="6" width="16" height="158" rx="8" fill="#e8e8e4" stroke="#ddd" stroke-width="1"/>
+          <rect id="thermo-fill" x="11" y="164" width="16" height="0" rx="0" fill="#00B15E" style="transition:all .5s cubic-bezier(.4,0,.2,1)"/>
+          <circle id="thermo-bulb" cx="19" cy="186" r="14" fill="#00B15E" style="transition:fill .5s"/>
+          <circle cx="19" cy="186" r="8" fill="white" opacity=".3"/>
+          <line x1="29" y1="125" x2="35" y2="125" stroke="#ccc"/><line x1="29" y1="92" x2="35" y2="92" stroke="#ccc"/><line x1="29" y1="59" x2="35" y2="59" stroke="#ccc"/><line x1="29" y1="26" x2="35" y2="26" stroke="#ccc"/>
+        </svg>
+        <div>
+          <div class="temp-num" id="temp-num">28<span>°C</span></div>
+          <div class="status-badge" id="status-badge">
+            <span id="status-emoji" style="font-size:22px">🔥</span>
+            <span class="status-label" id="status-label">Спекотно</span>
+          </div>
+        </div>
+      </div>
+      <div class="discount-box" id="discount-box">
+        <div class="discount-label">Твоя морозивна знижка</div>
+        <div class="discount-num" id="discount-num">−15%</div>
+        <div class="discount-sub">на все морозиво 🍦</div>
+      </div>
+    </div>
+  </div>
+  <footer><p>Фора — морозивна твого району · fora.ua</p></footer>
+</div>
+
+<div class="overlay hidden" id="overlay">
+  <div class="coupon">
+    <div class="coupon-head">
+      <div class="coupon-head-row">
+        <svg width="100" height="33" viewBox="0 0 150 50" fill="none"><path d="M9.654 46.974H94.031c4.77 0 8.654-3.884 8.654-8.654V11.68C102.685 6.91 98.801 3.026 94.031 3.026H9.654C4.884 3.026 1 6.91 1 11.68v26.64c-.026 4.77 3.858 8.654 8.654 8.654Z" fill="#00B15E"/><path d="M48.467 16.659h-.104c-2.06 0-3.832.677-5.292 2.007-1.46 1.329-2.19 2.972-2.19 4.848v2.868c0 1.876.73 3.519 2.19 4.848 1.46 1.33 3.233 2.007 5.292 2.007h.104c2.06 0 3.832-.677 5.292-2.007 1.46-1.329 2.19-2.972 2.19-4.848v-2.868c0-1.876-.73-3.519-2.19-4.848-1.434-1.356-3.232-2.007-5.292-2.007Z" fill="#fff"/><path d="M37.337 18.666c-1.408-1.329-3.128-2.007-5.11-2.007h-.103c-1.121 0-2.19.235-3.18.704-.365-.652-1.069-1.121-1.877-1.121-.808 0-1.512.443-1.877 1.12a8.173 8.173 0 0 0-3.18-.703h-.13c-1.982 0-3.676.677-5.084 2.007-1.407 1.33-2.111 2.972-2.111 4.848v2.868c0 1.877.704 3.519 2.111 4.849 1.408 1.329 3.128 2.007 5.084 2.007h.104c1.043 0 2.007-.209 2.945-.6v2.66c0 .547.209 1.042.626 1.46.417.39.938.599 1.512.599.521 0 .99-.156 1.408-.495.39-.313.625-.73.703-1.2V32.665a8.06 8.06 0 0 0 2.945.6h.104c1.982 0 3.702-.679 5.11-2.008 1.407-1.33 2.111-2.972 2.111-4.849v-2.867c.026-1.903-.704-3.545-2.111-4.874Z" fill="#fff"/><path d="M70.233 18.666c-1.46-1.329-3.258-2.007-5.318-2.007h-.104c-1.226 0-2.398.261-3.467.756-.365-.704-1.069-1.173-1.903-1.173-1.173 0-2.138.964-2.138 2.137v.287 1.355 15.301c0 .548.209 1.043.652 1.46.417.365.964.574 1.564.574.6 0 1.121-.209 1.59-.6.417-.391.626-.886.626-1.434V32.638a8.172 8.172 0 0 0 2.945.6h.104c2.06 0 3.858-.678 5.318-2.008 1.46-1.329 2.19-2.971 2.19-4.848v-2.868c.052-1.876-.704-3.518-2.06-4.848Z" fill="#fff"/><path d="M127.5 47c12.15 0 22-9.85 22-22s-9.85-22-22-22-22 9.85-22 22 9.85 22 22 22Z" fill="#E5412E"/><path d="M137.978 20.178a2.208 2.208 0 0 0-1.564-.756h-1.668l-4.144-4.9a1.107 1.107 0 0 0-1.669-.131c-.234.209-.391.496-.417.808a1.1 1.1 0 0 0 .287.86l2.867 3.39h-8.367l2.867-3.39c.209-.234.313-.547.287-.86a1.126 1.126 0 0 0-.417-.808 1.126 1.126 0 0 0-.86-.287 1.126 1.126 0 0 0-.808.417l-4.145 4.901h-1.668c-.6 0-1.173.287-1.564.756-.391.47-.521 1.095-.365 1.694l2.32 9.827c.208.913 1.016 1.538 1.929 1.538h13.215c.913 0 1.721-.625 1.929-1.538l2.32-9.827c.157-.6.026-1.225-.365-1.694Z" fill="#fff"/><path d="M86.785 16.398c-.782 0-1.46.417-1.825 1.017v.026a8.26 8.26 0 0 0-3.493-.782h-.104c-2.06 0-3.832.677-5.292 2.007-1.46 1.33-2.19 2.972-2.19 4.848v2.868c0 1.877.73 3.519 2.19 4.849 1.46 1.329 3.233 2.007 5.292 2.007h.104c1.252 0 2.424-.261 3.493-.782.391.626 1.069 1.043 1.851 1.043 1.2 0 2.164-.965 2.164-2.164V19.135v-.47-.104c0-1.199-.964-2.163-2.164-2.163Z" fill="#fff"/></svg>
+        <div class="stk" id="coupon-temp-stk" style="background:#FFC42E;color:#1D3A2C;font-size:11px;transform:rotate(3deg)"></div>
+      </div>
+      <div class="coupon-pct" id="coupon-pct"></div>
+      <div class="coupon-desc">знижка на все морозиво</div>
+      <div class="perf"></div><div class="cutout cutout-l"></div><div class="cutout cutout-r"></div>
+    </div>
+    <div class="coupon-body">
+      <p class="hint">Покажи цей купон на касі будь-якого магазину Фора</p>
+      <div class="qr-wrap" id="qr-wrap"></div>
+      <div class="code-box" id="code-box"></div>
+      <p class="fine">Діє в усіх 340+ магазинах Фора · до кінця серпня 2026</p>
+      <button class="coupon-btn" id="coupon-close">Зберегти купон 🍦</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const TIERS=[
+  {min:20,max:24,pct:5,label:"Прохолодно",emoji:"🌿",color:"#00B15E"},
+  {min:25,max:27,pct:10,label:"Тепленько",emoji:"☀️",color:"#00AEEF"},
+  {min:28,max:30,pct:15,label:"Спекотно",emoji:"🔥",color:"#FFC42E"},
+  {min:31,max:33,pct:20,label:"Пече!",emoji:"🌶️",color:"#FF8C00"},
+  {min:34,max:36,pct:25,label:"Пекло!",emoji:"🥵",color:"#FF6B55"},
+  {min:37,max:42,pct:30,label:"Плавимось!",emoji:"🌋",color:"#E5412E"},
+];
+function getTier(t){for(let i=TIERS.length-1;i>=0;i--)if(t>=TIERS[i].min)return{...TIERS[i],idx:i};return{...TIERS[0],idx:0}}
+const $=id=>document.getElementById(id);
+
+TIERS.forEach((t,i)=>{const d=document.createElement('div');d.className='tier-cell';d.id='tc-'+i;d.innerHTML=`<div class="emoji">${t.emoji}</div><div class="pct">−${t.pct}%</div><div class="range">${t.min}–${t.max}°</div>`;$('tier-grid').appendChild(d)});
+
+(function(){const s=130,g=13,cs=s/g,d="1011010011010010110100110101001101010011010100110101101001101011010011101001011010100111010010110101001010110100101110100101001011101010011010101101001101010110101001011010010110100110101001101011010010110101001110100101101010011101001011010100";let v=`<svg width="${s}" height="${s}" viewBox="0 0 ${s} ${s}"><rect width="${s}" height="${s}" fill="white" rx="10"/>`;for(let y=0;y<g;y++)for(let x=0;x<g;x++){const f=(x<3&&y<3)||(x>=g-3&&y<3)||(x<3&&y>=g-3);if(f||d[y*g+x]==="1")v+=`<rect x="${x*cs+1}" y="${y*cs+1}" width="${cs-2}" height="${cs-2}" rx="1.5" fill="#1D3A2C"/>`}v+='</svg>';$('qr-wrap').innerHTML=v})();
+
+function update(temp){
+  const tier=getTier(temp),heat=Math.min(Math.max((temp-20)/22,0),1);
+  let bg;
+  if(heat<.25)bg='linear-gradient(135deg,#e8f8ee 0%,#d0f0db 50%,#fffdf5 100%)';
+  else if(heat<.5)bg='linear-gradient(135deg,#fef9e7 0%,#fce588 50%,#fff8d0 100%)';
+  else if(heat<.75)bg='linear-gradient(135deg,#fff0e0 0%,#ffb74d 50%,#ffe8cc 100%)';
+  else bg='linear-gradient(135deg,#ffe0d0 0%,#ff7b5a 50%,#ffd0c0 100%)';
+  $('page').style.background=bg;
+  $('temp-num').innerHTML=temp+'<span>°C</span>';
+  $('status-badge').style.background=tier.color+'15';
+  $('status-emoji').textContent=tier.emoji;
+  $('status-label').textContent=tier.label;
+  $('status-label').style.color=tier.color;
+  const fill=Math.max(0,Math.min((temp-18)/24,1)),barH=158,fillH=barH*fill;
+  $('thermo-fill').setAttribute('y',6+barH-fillH);
+  $('thermo-fill').setAttribute('height',fillH);
+  $('thermo-fill').setAttribute('rx',fill>.95?8:0);
+  $('thermo-fill').setAttribute('fill',tier.color);
+  $('thermo-bulb').setAttribute('fill',tier.color);
+  [...$('tier-bar').children].forEach((b,i)=>b.style.background=i<=tier.idx?tier.color:'rgba(29,58,44,0.06)');
+  $('discount-box').style.background=tier.color+'10';
+  $('discount-box').style.borderColor=tier.color+'20';
+  $('discount-num').textContent='−'+tier.pct+'%';
+  for(let i=0;i<6;i++){const c=$('tc-'+i);if(i===tier.idx){c.style.background=TIERS[i].color+'15';c.style.borderColor=TIERS[i].color+'30'}else{c.style.background='rgba(255,255,255,0.5)';c.style.borderColor='transparent'}}
+}
+
+$('slider').addEventListener('input',function(){update(+this.value)});
+$('cta-btn').addEventListener('click',function(){
+  const temp=+$('slider').value,tier=getTier(temp),code='FORA-MRZV-'+tier.pct+Math.floor(Math.random()*9000+1000);
+  $('coupon-temp-stk').textContent=tier.emoji+' '+temp+'°C';
+  $('coupon-pct').textContent='−'+tier.pct+'%';
+  $('code-box').textContent=code;
+  $('overlay').classList.remove('hidden');
+});
+$('overlay').addEventListener('click',function(e){if(e.target===$('overlay'))$('overlay').classList.add('hidden')});
+$('coupon-close').addEventListener('click',function(){$('overlay').classList.add('hidden')});
+update(28);
+</script>
+</body>
+</html>
